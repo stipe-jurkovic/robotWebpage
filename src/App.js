@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "@tabler/core/dist/css/tabler.min.css";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div className="page theme-dark">
+      {/* Navbar */}
+      <header className="navbar navbar-expand-md navbar-dark d-print-none bg-dark">
+        <div className="container-xl">
+          <a href="#" className="navbar-brand">
+            Tabler React Dark
+          </a>
+        </div>
       </header>
+
+      {/* Main content */}
+      <div className="page-wrapper">
+        <div className="container-xl mt-4">
+          <div className="card bg-dark text-white">
+            <div className="card-header">Dobrodošao!</div>
+            <div className="card-body">
+              Ovo je React aplikacija s Tabler dark temom.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
