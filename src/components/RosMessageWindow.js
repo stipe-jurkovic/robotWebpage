@@ -1,37 +1,54 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import ROSLIB from "roslib";
 
-const generateFakeMessage = () => {
-  const phrases = [
-    "Publishing sensor data...",
-    "Robot is moving...",
-    "Warning: Low battery",
-    "Target reached",
-    "Updating map...",
-    "Connection stable",
-  ];
-  return phrases[Math.floor(Math.random() * phrases.length)];
-};
-
-const RosMessageWindow = () => {
+const RosMessageWindow = ({ topicConfig }) => {
   const [messages, setMessages] = useState([]);
+  const [paused, setPaused] = useState(false);
+  const listenerRef = useRef(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newMessage = {
-        text: generateFakeMessage(),
-        time: new Date().toLocaleTimeString(),
-      };
-      setMessages((prev) => [newMessage, ...prev.slice(0, 49)]);
-    }, 2000); // every 2 seconds
+    if (!topicConfig || !topicConfig.ros) {
+      console.error("topicConfig or topicConfig.ros is undefined.");
+      return;
+    }
 
-    return () => clearInterval(interval);
-  }, []);
+    const listener = new ROSLIB.Topic({
+      ros: topicConfig.ros,
+      name: topicConfig.name,
+      messageType: topicConfig.messageType,
+    });
+
+    listenerRef.current = listener;
+
+    listener.subscribe((message) => {
+      if (paused) return;
+      const time = new Date().toLocaleTimeString();
+      const text = JSON.stringify(message);
+      setMessages((prev) => [{ time, text }, ...prev.slice(0, 49)]);
+    });
+
+    return () => {
+      listener.unsubscribe();
+    };
+  }, [topicConfig, paused]);
+
+  const togglePaused = () => {
+    setPaused((prev) => !prev);
+  };
 
   return (
     <div className="container-xl mt-4 theme-dark">
       <div className="card">
-        <div className="card-header">ROS 2 Message Window (Simulated)</div>
-        <div className="card-body" style={{ maxHeight: "400px", overflowY: "auto" }}>
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>ROS 2 /joy Topic Messages</span>
+          <button className="btn btn-sm btn-outline-light" onClick={togglePaused}>
+            {paused ? "Resume" : "Pause"}
+          </button>
+        </div>
+        <div
+          className="card-body"
+          style={{ maxHeight: "400px", overflowY: "auto" }}
+        >
           {messages.length === 0 ? (
             <div>Waiting for messages...</div>
           ) : (
