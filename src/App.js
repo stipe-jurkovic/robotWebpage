@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import "@tabler/core/dist/css/tabler.min.css";
 import RosMessageWindow from "./components/RosMessageWindow";
+import PublisherComponent from "./components/PublisherComponent";
 import ROSLIB from "roslib";
 function App() {
 
@@ -38,10 +39,18 @@ function App() {
         <RosMessageWindow
           topicConfig={{
             ros: ros.current,
-            name: "/joy",
-            messageType: "sensor_msgs/Joy",
+            name: "/test",
+            messageType: "std_msgs/String",
           }}
-        />      </div>
+        />
+        <PublisherComponent
+          topicConfig={{
+            ros: ros.current,
+            name: "/test",
+            messageType: "std_msgs/String",
+          }}
+        />
+      </div>
     </div>
   );
 }

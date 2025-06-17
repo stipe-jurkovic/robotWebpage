@@ -40,7 +40,7 @@ const RosMessageWindow = ({ topicConfig }) => {
     <div className="container-xl mt-4 theme-dark">
       <div className="card">
         <div className="card-header d-flex justify-content-between align-items-center">
-          <span>ROS 2 /joy Topic Messages</span>
+          <span>ROS 2 {topicConfig.name} Topic Messages</span>
           <button className="btn btn-sm btn-outline-light" onClick={togglePaused}>
             {paused ? "Resume" : "Pause"}
           </button>
