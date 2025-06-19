@@ -23,7 +23,7 @@ const RosMessageWindow = ({ topicConfig }) => {
     listener.subscribe((message) => {
       if (paused) return;
       const time = new Date().toLocaleTimeString();
-      const text = JSON.stringify(message);
+      const text = message.data || "No data";
       setMessages((prev) => [{ time, text }, ...prev.slice(0, 49)]);
     });
 

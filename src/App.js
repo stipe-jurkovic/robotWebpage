@@ -36,20 +36,29 @@ function App() {
       </header>
 
       <div className="page-wrapper">
-        <RosMessageWindow
-          topicConfig={{
-            ros: ros.current,
-            name: "/test",
-            messageType: "std_msgs/String",
-          }}
-        />
-        <PublisherComponent
-          topicConfig={{
-            ros: ros.current,
-            name: "/test",
-            messageType: "std_msgs/String",
-          }}
-        />
+          <PublisherComponent
+            topicConfig={{
+              ros: ros.current,
+              name: "stepper_control",
+              messageType: "std_msgs/String",
+            }}
+          />
+        <div className="d-flex flex-row">
+          <RosMessageWindow
+            topicConfig={{
+              ros: ros.current,
+              name: "stepper_control",
+              messageType: "std_msgs/String",
+            }}
+          />
+          <RosMessageWindow
+            topicConfig={{
+              ros: ros.current,
+              name: "stepper_control_response",
+              messageType: "std_msgs/String",
+            }}
+          />
+        </div>
       </div>
     </div>
   );
