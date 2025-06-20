@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef } from "react";
 import "@tabler/core/dist/css/tabler.min.css";
 import RosMessageWindow from "./components/RosMessageWindow";
 import PublisherComponent from "./components/PublisherComponent";
+import JoystickPublisher from "./components/JoystickPublisher";
 import ROSLIB from "roslib";
+import CameraComponent from "./components/CameraComponent";
 function App() {
 
   const ros = useRef(new ROSLIB.Ros({ url: "ws://192.168.18.87:9090" }));
@@ -36,6 +38,14 @@ function App() {
       </header>
 
       <div className="page-wrapper">
+        <div className="d-flex flex-column">
+          <CameraComponent
+            topicConfig={{
+              ros: ros.current,
+              name: "images",
+              messageType: "sensor_msgs/msg/Image",
+            }}
+          />
           <PublisherComponent
             topicConfig={{
               ros: ros.current,
@@ -43,7 +53,6 @@ function App() {
               messageType: "std_msgs/String",
             }}
           />
-        <div className="d-flex flex-row">
           <RosMessageWindow
             topicConfig={{
               ros: ros.current,
@@ -56,6 +65,13 @@ function App() {
               ros: ros.current,
               name: "stepper_control_response",
               messageType: "std_msgs/String",
+            }}
+          />
+          <JoystickPublisher
+            topicConfig={{
+              ros: ros.current,
+              name: "wheels",
+              messageType: "geometry_msgs/msg/Twist",
             }}
           />
         </div>

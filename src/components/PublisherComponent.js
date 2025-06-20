@@ -6,7 +6,7 @@ const PublisherComponent = ({ topicConfig }) => {
     const topicRef = useRef(null);
     const [inputValue, setInputValue] = useState("");
     const [step, setStep] = useState(1);
-    const [feedrate, setFeedrate] = useState(2000);
+    const [feedrate, setFeedrate] = useState(4000);
 
 
 
@@ -49,11 +49,22 @@ const PublisherComponent = ({ topicConfig }) => {
         const gcode = `$H`;
         publish(gcode);
     };
+    const burn = (t) => {
+        const gcode = [
+            "G1 F1",            // Set feedrate
+            "M3 S200",          // Laser ON
+            `G4 P${t}`,         // Wait t seconds
+            "M5 S0"             // Laser OFF
+        ].join('\n');
+
+        publish(gcode);
+    };
+
 
 
     return (
-        <div className="container-xl mt-4 theme-dark">
-            <div className="card">
+        <div className="container-l mt-4 theme-dark">
+            <div className="card" style={{ maxWidth: '500px', margin: '0 auto' }}>
                 <div className="card-header d-flex justify-content-between align-items-center">
                     <input
                         type="text"
@@ -69,7 +80,7 @@ const PublisherComponent = ({ topicConfig }) => {
                         Send
                     </button>
                 </div>
-                <div className="card-body">
+                <div className="card-body d-flex flex-column align-items-center">
                     {/* Step size buttons */}
                     <div className="mb-3 text-center">
                         <span className="me-2 text-white">Step size:</span>
@@ -110,6 +121,39 @@ const PublisherComponent = ({ topicConfig }) => {
                         >
                             Home
                         </button>
+                    </div>
+                    <div className="mb-3 text-center py-2">
+                        <span className="me-2 text-white">Burn:</span>
+                        {[1000, 2000, 4000].map((t) => (
+                            <button
+                                key={t}
+                                className="btn btn-sm me-2 btn-outline-success"
+                                onClick={() => burn(t / 1000)}
+                            >
+                                {t} ms
+                            </button>
+                        ))}
+
+                        {/* Custom burn duration input */}
+                        <input
+                            type="number"
+                            className="form-control d-inline-block ms-3"
+                            style={{ width: "100px" }}
+                            placeholder="ms"
+                            id="customBurnInput"
+                            defaultValue={100}
+                        />
+                        <button
+                            className="btn btn-sm btn-outline-success ms-2"
+                            onClick={() => {
+                                const input = document.getElementById("customBurnInput");
+                                const value = parseFloat(input.value);
+                                if (!isNaN(value)) burn(value / 1000);
+                            }}
+                        >
+                            Burn
+                        </button>
+
                     </div>
 
                 </div>
