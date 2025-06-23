@@ -25,30 +25,18 @@ const CameraComponent = ({ topicConfig }) => {
     listener.subscribe((message) => {
       if (paused) return;
 
-      const { width, height, data, encoding } = message;
+      const { format, data } = message;
 
-      if (encoding !== "bgr8") {
-        console.warn(`Unsupported encoding: ${encoding}`);
+      if (typeof data !== "string") {
+        console.error("Expected base64-encoded JPEG in 'data' field.");
         return;
       }
 
-      const byteData = Uint8Array.from(data); // Convert to Uint8Array
-      const rgba = new Uint8ClampedArray(width * height * 4);
+      const mimeType = format.toLowerCase().includes("png")
+        ? "image/png"
+        : "image/jpeg";
 
-      for (let i = 0, j = 0; i < byteData.length; i += 3, j += 4) {
-        rgba[j] = byteData[i + 2];     // R
-        rgba[j + 1] = byteData[i + 1]; // G
-        rgba[j + 2] = byteData[i];     // B
-        rgba[j + 3] = 255;             // A
-      }
-
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      const imageData = new ImageData(rgba, width, height);
-      ctx.putImageData(imageData, 0, 0);
-      setImageSrc(canvas.toDataURL("image/png"));
+      setImageSrc(`data:${mimeType};base64,${data}`);
     });
 
     return () => {
@@ -74,13 +62,13 @@ const CameraComponent = ({ topicConfig }) => {
         </div>
         <div
           className="card-body d-flex justify-content-center align-items-center"
-          style={{ minHeight: "400px", background: "#222" }}
+          style={{ minHeight: "400px" , padding: 0}}
         >
           {imageSrc ? (
             <img
               src={imageSrc}
               alt="ROS Camera Feed"
-              style={{ maxWidth: "100%", maxHeight: "380px", borderRadius: "8px" }}
+              style={{ maxWidth: "100%", borderRadius: "0 0 8px 8px" }}
             />
           ) : (
             <div style={{ color: "#fff" }}>Waiting for image...</div>

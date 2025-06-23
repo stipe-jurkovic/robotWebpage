@@ -42,8 +42,8 @@ function App() {
           <CameraComponent
             topicConfig={{
               ros: ros.current,
-              name: "images",
-              messageType: "sensor_msgs/msg/Image",
+              name: "image/compressed",
+              messageType: "sensor_msgs/msg/CompressedImage",
             }}
           />
           <PublisherComponent
