@@ -7,14 +7,19 @@ const PublisherComponent = ({ topicConfig }) => {
     const [inputValue, setInputValue] = useState("");
     const [step, setStep] = useState(1);
     const [feedrate, setFeedrate] = useState(4000);
-
-
+    const serviceRef = useRef(null);
 
     useEffect(() => {
         if (!topicConfig || !topicConfig.ros) {
             console.error("topicConfig or topicConfig.ros is undefined.");
             return;
         }
+
+        serviceRef.current = new ROSLIB.Service({
+            ros: topicConfig.ros,
+            name: "set_burn_length",  // Change this to match your ROS service name
+            serviceType: "coordinate_sender/srv", // Change to your actual .srv type
+        });
 
         const topic = new ROSLIB.Topic({
             ros: topicConfig.ros,
@@ -28,6 +33,23 @@ const PublisherComponent = ({ topicConfig }) => {
         return () => {
         };
     }, [topicConfig]);
+
+    const callBurnService = (millis) => {
+        if (!serviceRef.current) return;
+
+        const request = new ROSLIB.ServiceRequest({
+            milis: millis,
+        });
+
+        serviceRef.current.callService(request, (result) => {
+            console.log("Service response:", result);
+            if (result.isSuccessful) {
+                console.log("Burn successful!");
+            } else {
+                console.warn("Burn failed.");
+            }
+        });
+    };
 
     const publish = (value = inputValue) => {
         if (value.trim() === "") return;
@@ -123,7 +145,7 @@ const PublisherComponent = ({ topicConfig }) => {
                         </button>
                     </div>
                     <div className="mb-3 text-center py-2">
-                        <span className="me-2 text-white">Burn:</span>
+                        <span className="me-2 text-white">Manual Burn:</span>
                         {[1000, 2000, 4000].map((t) => (
                             <button
                                 key={t}
@@ -155,7 +177,38 @@ const PublisherComponent = ({ topicConfig }) => {
                         </button>
 
                     </div>
+                    <div className="mb-3 text-center py-2">
+                        <span className="me-2 text-white">Burn Duration:</span>
+                        {[1000, 2000, 4000].map((t) => (
+                            <button
+                                key={t}
+                                className="btn btn-sm me-2 btn-outline-warning"
+                                onClick={() => callBurnService(t)}
+                            >
+                                {t} ms
+                            </button>
+                        ))}
 
+                        {/* Custom burn duration input */}
+                        <input
+                            type="number"
+                            className="form-control d-inline-block ms-3"
+                            style={{ width: "100px" }}
+                            placeholder="ms"
+                            id="customBurnServiceInput"
+                            defaultValue={100}
+                        />
+                        <button
+                            className="btn btn-sm btn-outline-warning ms-2"
+                            onClick={() => {
+                                const input = document.getElementById("customBurnServiceInput");
+                                const value = parseInt(input.value);
+                                if (!isNaN(value)) callBurnService(value);
+                            }}
+                        >
+                            Set Burn Duration
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -21,7 +21,7 @@ function App() {
       }
 
       ros.current = new ROSLIB.Ros({
-        url: "ws://192.168.18.87:9090",
+        url: `ws://${window.location.hostname}:9090`,
       });
 
       ros.current.on("connection", () => {
