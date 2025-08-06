@@ -109,7 +109,7 @@ function App() {
   }
 
   return (
-    <div className="page theme-dark" data-bs-theme="dark">
+    <div className="page theme-dark pb-4" data-bs-theme="dark">
       <header className="navbar navbar-expand-md navbar-dark bg-dark d-print-none">
         <div className="container-xl">
           <span className="navbar-brand">ROS 2 Dashboard</span>
