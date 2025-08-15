@@ -125,6 +125,20 @@ function App() {
               messageType: "sensor_msgs/msg/CompressedImage",
             }}
           />
+          <CameraComponent
+            topicConfig={{
+              ros: ros.current,
+              name: "image/annotated",
+              messageType: "sensor_msgs/msg/CompressedImage",
+            }}
+          />
+          <RosMessageWindow
+          topicConfig={{
+            ros: ros.current,
+            name: "burn_progress",
+            messageType: "std_msgs/String",
+          }}
+          />
           <PublisherComponent
             topicConfig={{
               ros: ros.current,
@@ -132,7 +146,7 @@ function App() {
               messageType: "std_msgs/String",
             }}
           />
-          <RosMessageWindow
+          {/* <RosMessageWindow
             topicConfig={{
               ros: ros.current,
               name: "stepper_control",
@@ -145,7 +159,7 @@ function App() {
               name: "stepper_control_response",
               messageType: "std_msgs/String",
             }}
-          />
+          /> */}
           <JoystickPublisher
             topicConfig={{
               ros: ros.current,
