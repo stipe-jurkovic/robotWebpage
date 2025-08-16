@@ -5,6 +5,7 @@ import PublisherComponent from "./components/PublisherComponent";
 import JoystickPublisher from "./components/JoystickPublisher";
 import ROSLIB from "roslib";
 import CameraComponent from "./components/CameraComponent";
+import AnnotatedImage from "./components/AnnotatedImage";
 
 function App() {
   const ros = useRef(null);
@@ -125,13 +126,7 @@ function App() {
               messageType: "sensor_msgs/msg/CompressedImage",
             }}
           />
-          <CameraComponent
-            topicConfig={{
-              ros: ros.current,
-              name: "image/annotated",
-              messageType: "sensor_msgs/msg/CompressedImage",
-            }}
-          />
+          <AnnotatedImage/>
           <RosMessageWindow
           topicConfig={{
             ros: ros.current,
